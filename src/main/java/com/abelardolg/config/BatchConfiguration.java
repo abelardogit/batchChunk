@@ -26,7 +26,6 @@ public class BatchConfiguration {
     }
 
     @Bean
-    @JobScope
     public PersonItemWriter itemReaderStep() {
         return new PersonItemWriter();
     }
