@@ -28,73 +28,7 @@ public class BatchConfiguration {
     @Bean
     @JobScope
     public PersonItemWriter itemReaderStep() {
-        IPersonDAO personDAO;
-        IPersonService service = new PersonServiceImpl(personDAO);
         return new PersonItemWriter();
-    }
-
-    @Bean
-    @JobScope
-    public ItemProcessorStep itemProcessorStep() {
-        return new ItemProcessorStep();
-    }
-
-    @Bean
-    @JobScope
-    public ItemWriterStep itemWriterStep() {
-        return new ItemWriterStep();
-    }
-
-    @Bean
-    public Step descompressFileStep(JobRepository jobRepository,
-                                    PlatformTransactionManager transactionManager) {
-        return new StepBuilder("itemDescompressStep", jobRepository)
-                .<String, String>chunk(10, transactionManager)
-                itemDescompressStep())
-                .build()
-        ;
-    }
-
-    @Bean
-    public Step readFileStep(JobRepository jobRepository,
-                             PlatformTransactionManager transactionManager) {
-        return new StepBuilder("itemReaderStep", jobRepository)
-                .<String, String>chunk(10, transactionManager)
-                .tasklet(itemReaderStep())
-                .build()
-        ;
-    }
-
-    @Bean
-    public Step processFileStep(JobRepository jobRepository,
-                                PlatformTransactionManager transactionManager) {
-        return new StepBuilder("itemProcessStep", jobRepository)
-                .<String, String>chunk(10, transactionManager)
-                .tasklet(itemProcessorStep())
-                .build()
-        ;
-    }
-
-    @Bean
-    public Step writeDataStep(JobRepository jobRepository,
-                              PlatformTransactionManager transactionManager) {
-        return new StepBuilder("itemWriterStep", jobRepository)
-                .<String, String>chunk(10, transactionManager)
-                .tasklet(itemWriterStep())
-                .build()
-        ;
-    }
-
-    @Bean
-    public Job readCSVJob(JobRepository jobRepository) {
-        System.err.println("readCSVJob");
-        return new JobBuilder("readCSVJob", jobRepository)
-                .start(descompressFileStep(jobRepository))
-                .next(readFileStep(jobRepository))
-                .next(processFileStep(jobRepository))
-                .next(writeDataStep(jobRepository))
-                .build()
-        ;
     }
 }
 
