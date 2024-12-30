@@ -27,7 +27,9 @@ public class BatchConfiguration {
 
     @Bean
     public PersonItemWriter itemReaderStep() {
-        return new PersonItemWriter();
+        IPersonDAO personDAO = null;
+        IPersonService personService = new PersonServiceImpl(personDAO);
+        return new PersonItemWriter(personService);
     }
 }
 

@@ -10,6 +10,12 @@ import java.util.List;
 
 @Slf4j
 public class PersonItemWriter implements ItemWriter<Person> {
+
+    private IPersonService personService;
+
+    public PersonItemWriter(IPersonService personService) {
+        this.personService = personService;
+    }
     @Override
     public void write(Chunk<? extends Person> chunk) throws Exception {
         chunk.forEach( person -> log.info(person.toString()));
